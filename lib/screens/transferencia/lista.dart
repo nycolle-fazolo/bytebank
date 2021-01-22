@@ -31,7 +31,7 @@ class ListaTransferenciasState extends State<ListaTransferencias> {
         itemCount: widget._transferencias.length,
         itemBuilder: (context, indice) {
           final transferencia = widget._transferencias[indice];
-          debugPrint('Item $indice - $transferencia');
+          //debugPrint('Item $indice - $transferencia');
           return ItemTransferencia(transferencia);
         },
       ),

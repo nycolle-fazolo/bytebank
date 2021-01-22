@@ -1,8 +1,10 @@
 
 import 'package:bytebank/components/editor.dart';
+import 'package:bytebank/models/saldo.dart';
 import 'package:bytebank/models/transferencia.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 const _tituloAppBar = 'Nova Transferencia'; //atributo privado
 const _rotuloCampoValor = 'Valor';
@@ -60,16 +62,23 @@ class FormulatioTransferenciaState extends State<FormularioTransferencia> {
 
     final int numeroConta = int.tryParse(_controladorCampoNumeroConta.text);
     final double valor = double.tryParse(_controladorCampoValor.text);
+
     if (valor != null && numeroConta != null) {
       final transferenciaCriada = Transferencia(valor, numeroConta);
+
+      _atualizaEstado(context, valor);
       Navigator.pop(context, transferenciaCriada);
 
-      debugPrint('Criando - $transferenciaCriada');
+      //debugPrint('Criando - $transferenciaCriada');
       /*Scaffold.of(context).showSnackBar(
         SnackBar(
           content: Text('$transferenciaCriada'),
         ),
       );*/
     }
+  }
+
+  _atualizaEstado(context, valor){
+    Provider.of<Saldo>(context, listen:false).subtrai(valor);
   }
 }
