@@ -2,7 +2,7 @@
 import 'package:bytebank/components/editor.dart';
 import 'package:bytebank/models/saldo.dart';
 import 'package:bytebank/models/transferencia.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:bytebank/models/transferencias.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,16 +14,7 @@ const _mascaraCampoNumeroConta = '0000';
 const _textoBotaoConfirmar = 'Confirmar';
 
 
-class FormularioTransferencia extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return FormulatioTransferenciaState();
-    //throw UnimplementedError();
-  }
-}
-
-class FormulatioTransferenciaState extends State<FormularioTransferencia> {
+class FormularioTransferencia extends StatelessWidget {
   final TextEditingController _controladorCampoNumeroConta =
   TextEditingController(); //atributo privado
   final TextEditingController _controladorCampoValor = TextEditingController();
@@ -62,23 +53,35 @@ class FormulatioTransferenciaState extends State<FormularioTransferencia> {
 
     final int numeroConta = int.tryParse(_controladorCampoNumeroConta.text);
     final double valor = double.tryParse(_controladorCampoValor.text);
+    final transferenciaValida = _validaTransferencia(context, numeroConta, valor);
 
-    if (valor != null && numeroConta != null) {
-      final transferenciaCriada = Transferencia(valor, numeroConta);
+    if (transferenciaValida) {
+      final novaTransferencia = Transferencia(valor, numeroConta);
 
-      _atualizaEstado(context, valor);
-      Navigator.pop(context, transferenciaCriada);
+      _atualizaEstado(context, novaTransferencia, valor);
+      Navigator.pop(context);
 
-      //debugPrint('Criando - $transferenciaCriada');
+      //debugPrint('Criando - $novaTransferencia');
       /*Scaffold.of(context).showSnackBar(
         SnackBar(
-          content: Text('$transferenciaCriada'),
+          content: Text('$novaTransferencia'),
         ),
       );*/
     }
   }
 
-  _atualizaEstado(context, valor){
-    Provider.of<Saldo>(context, listen:false).subtrai(valor);
+  _validaTransferencia(context, numeroConta, valor) {
+    final _camposPreenchidos = valor != null && numeroConta != null;
+    final _saldoSuficiente = valor <= Provider.of<Saldo>(
+      context, listen: false).valor;
+
+    return _camposPreenchidos && _saldoSuficiente;
+  }
+
+  _atualizaEstado(context, novaTransferencia, valor){
+    Provider.of<Transferencias>(context, listen:false)
+        .adiciona(novaTransferencia);
+    Provider.of<Saldo>(context, listen:false)
+        .subtrai(valor);
   }
 }

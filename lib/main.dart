@@ -1,33 +1,38 @@
-import 'file:///C:/Users/nycol/Documents/GitHub/bytebank/lib/screens/dashboard/dashboard.dart';
-import 'package:bytebank/screens/transferencia/lista.dart';
+import 'package:bytebank/models/saldo.dart';
+import 'package:bytebank/models/transferencias.dart';
+import 'package:bytebank/screens/dashboard/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'models/saldo.dart';
 
 //void main() => runApp(ByteBankApp());
-void main() => runApp(ChangeNotifierProvider(create: (context) => Saldo(0),
-child: ByteBankApp(),));
+void main() => runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => Saldo(0),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => Transferencias(),
+        )
+      ],
+      child: ByteBankApp(),
+    ));
 
 class ByteBankApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primaryColor: Colors.lightBlue[500],
-        accentColor: Colors.cyan[700],
-        buttonTheme: ButtonThemeData(
-          buttonColor: Colors.cyan[700],
-          textTheme: ButtonTextTheme.primary,
-        )
-      ),
+          primaryColor: Colors.lightBlue[500],
+          accentColor: Colors.cyan[700],
+          buttonTheme: ButtonThemeData(
+            buttonColor: Colors.cyan[700],
+            textTheme: ButtonTextTheme.primary,
+          )),
       home: Dashboard(),
       //home: ListaTransferencias(),
     );
   }
 }
-
-
-
 
 /*
 void main() {
